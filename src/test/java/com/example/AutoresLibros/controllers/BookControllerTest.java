@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.List;
+
 import static org.mockito.Mockito.when;
 
 @AutoConfigureMockMvc
@@ -51,5 +53,19 @@ public class BookControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.author.name").value("John"))
                 .andDo(MockMvcResultHandlers.print())
                 ;
+    }
+
+    @DisplayName("Find all books then get the books information test")
+    @Test
+    public void findAllBooksTestThenReturnAllBooks() throws Exception{
+        Book book1 = Book.builder().name("Holiwis").build();
+        Book book2 = Book.builder().name("Hi").build();
+
+        when(bookService.getAll()).thenReturn(List.of(book1, book2));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/books/get")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Holiwis"));
     }
 }

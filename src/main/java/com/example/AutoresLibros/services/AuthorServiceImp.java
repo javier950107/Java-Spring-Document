@@ -16,6 +16,13 @@ public class AuthorServiceImp implements AuthorService{
 
     @Override
     public Author createAuthor(Author author) {
+        if(author.getName() == null || author.getLastName() == null){
+            throw new RuntimeException("Can be null");
+        }
+
+        if(!author.getLastName().contains("@")){
+            throw new RuntimeException("The lastname must be contain @");
+        }
         return authorRepository.save(author);
     }
 

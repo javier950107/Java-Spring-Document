@@ -17,8 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthorServiceTest {
@@ -33,7 +32,7 @@ public class AuthorServiceTest {
 
     @BeforeEach
     public void setUp(){
-        authorTest = new Author(1L, "John", "Doe", null);
+        authorTest = new Author(1L, "John", "Doe@", null);
     }
 
     @DisplayName("Test on insert data")
@@ -42,6 +41,20 @@ public class AuthorServiceTest {
         when(authorRepository.save(authorTest)).thenReturn(authorTest);
         Author saved = authorService.createAuthor(authorTest);
         Assertions.assertEquals(saved.getName(), "John");
+    }
+
+    @DisplayName("Test insert when lastname doesnt contain and @ then return a exception")
+    @Test
+    public void createAuthorWithoutLastNameWrongTest(){
+        Author author1 = new Author(1L, "Pepe", "Last", null);
+
+        Throwable test = Assertions.assertThrows(RuntimeException.class, () -> {
+            Author saved = authorService.createAuthor(author1);
+        });
+
+        Assertions.assertEquals(test.getMessage(), "The lastname must be contain @");
+
+        verify(authorRepository, never()).save(any());
     }
 
     @DisplayName("Test get authors then give me all authors")

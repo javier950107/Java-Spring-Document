@@ -32,6 +32,7 @@ public class AuthorController {
         try{
             return ResponseEntity.ok(authorServiceImp.createAuthor(author));
         }catch (Exception err){
+            System.out.println(err.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, err.getMessage());
         }
     }
